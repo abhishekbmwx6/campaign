@@ -58,7 +58,7 @@ class CampaignOperations {
   }
 
   sendMessage(who, message) {
-    let url = `http://sms.webozindia.in/api/v3/?method=sms&api_key=A77821e3a8091a31ab3110383cbc48666&to=${who}&sender=WOISOL&message=${encodeURIComponent(message)}`
+    let url = `http://sms.webozindia.in/api/v3/?method=sms&api_key=A77821e3a8091a31ab3110383cbc48666&to=91${who}&sender=WOISOL&message=${encodeURIComponent(message)}`
     console.log(url)
     return fetch(url)
       .then(res => res.text())
