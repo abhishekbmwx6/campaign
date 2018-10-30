@@ -10,7 +10,8 @@ router.put('/addpoints', (req, res) => {
     who: Joi.string().required(),
     channalid: Joi.string().required(),
     circle: Joi.string().required(),
-    operator: Joi.string().required()
+    operator: Joi.string().required(),
+    datetime: Joi.string()
   });
 
   const campaignOperations = new CampaignOperations();
