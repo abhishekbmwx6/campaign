@@ -24,7 +24,7 @@ app.use((req, res, next) => {
   next();
 });
 
-//mongo connection
+//mongo connection for heroku
 const dbconfig = {
   url: 'mongodb://test:test123@ds145573.mlab.com:45573',
   dbname: 'heroku_kbx0g42n'
