@@ -1,6 +1,6 @@
 const config = {
   "campaign_start_date": "2018-10-30",
-  "campaign_end_date": "2018-11-03",
+  "campaign_end_date": "2018-11-30",
   "campaign_start_time": "18:00:00",
   "campaign_end_time": "23:30:00",
   "campaign": {

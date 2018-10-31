@@ -4,14 +4,15 @@ const config = require('../config')
 const moment = require("moment")
 const mongoose = require("mongoose")
 const __ = require("underscore")
+const fetch = require("node-fetch")
 const { ObjectId } = mongoose.Types
 const { campaign, campaign_start_date, campaign_end_date, campaign_start_time, campaign_end_time } = config
 class CampaignOperations {
 
-  weekAndDay() {
+  weekAndDay(datetime) {
     return new Promise((resolve, reject) => {
       try {
-        const date = new Date()
+        const date = new Date(datetime)
         const days = ['sunday', 'monday', 'tuesday', 'wednesday',
           'thursday', 'friday', 'saturday']
         const prefixes = ['week1', 'week2', 'week3', 'week4', 'week5'];
@@ -25,12 +26,12 @@ class CampaignOperations {
 
   }
 
-  checkCampaignDateTime() {
+  checkCampaignDateTime(datetime) {
     return new Promise((resolve, reject) => {
 
       try {
         //check campain start data and end data
-        const date = new Date()
+        const date = new Date(datetime)
 
         let currdate = moment(date).utcOffset('+5:30').format("YYYY-MM-DD")
         let currdateTime = moment(date).utcOffset('+5:30').format("YYYY-MM-DD HH:mm:ss")
@@ -56,19 +57,30 @@ class CampaignOperations {
     return total + num;
   }
 
+  sendMessage(who, message) {
+    let url = `http://sms.webozindia.in/api/v3/?method=sms&api_key=A77821e3a8091a31ab3110383cbc48666&to=91${who}&sender=WOISOL&message=${encodeURIComponent(message)}`
+    console.log(url)
+    return fetch(url)
+      .then(res => res.text())
+      .then(body => { console.log(body); return true })
+      .catch(err => {
+        throw err
+      })
+  }
+
   async addPoints(data) {
     /**
      * Need to add logic for one time point in a day else 0 point should be added and point calculation  
      * */
 
     console.log(data)
-    const date = new Date()
 
-    const { who, channalid, circle, operator } = data
+    const { who, channalid, circle, operator, datetime } = data
+    const date = new Date(datetime)
     try {
-      await this.checkCampaignDateTime()
+      await this.checkCampaignDateTime(datetime)
 
-      let points = await this.weekAndDay()
+      let points = await this.weekAndDay(datetime)
 
       //check user
 
@@ -94,15 +106,16 @@ class CampaignOperations {
         }
 
         await campaignModel.create(userData)
-
-        return "you have give the right answer. your points are now " + points
+        let resposeMessage = "you have given the right answer. your points are now " + points
+        await this.sendMessage(who, resposeMessage)
+        return resposeMessage
       }
 
+      console.log("!!!!!Old User!!!!!!!")
       //presnt
-      let resposeMessage = ""
+      let resposeMessage = null
       let todaysPointIndex = __.findIndex(User.call_logs, { "call_date": moment(date).utcOffset('+5:30').format("YYYY-MM-DD") })
-
-      if (todaysPointIndex >= 1) {
+      if (todaysPointIndex >= 0) {
         points = 0
         resposeMessage = `the points are already allocated for the number ${who}. you can come back next day to participate again`
       }
@@ -116,8 +129,12 @@ class CampaignOperations {
 
       await campaignModel.updateOne({ _id: ObjectId(User._id) }, { $set: { call_logs: User.call_logs } })
       let finalPoints = __.pluck(User.call_logs, 'points')
+      console.log(finalPoints)
       let totalPoints = finalPoints.reduce(this.getSum)
-      return resposeMessage === "" ? "you have give the right answer. your points are now " + totalPoints : resposeMessage
+      resposeMessage = resposeMessage === null ? "you have given the right answer. your points are now " + totalPoints : resposeMessage
+
+      await this.sendMessage(who, resposeMessage)
+      return resposeMessage
     } catch (err) {
       console.log(err)
       throw err

@@ -4,13 +4,14 @@ const Joi = require('joi');
 const { validate } = require('../helper/helper')
 const CampaignOperations = require('../model/campaign');
 
-router.put('/addpoints', (req, res) => {
+router.get('/addpoints', (req, res) => {
   // validation schema
   const schema = Joi.object().keys({
     who: Joi.string().required(),
     channalid: Joi.string().required(),
     circle: Joi.string().required(),
-    operator: Joi.string().required()
+    operator: Joi.string().required(),
+    datetime: Joi.string()
   });
 
   const campaignOperations = new CampaignOperations();
