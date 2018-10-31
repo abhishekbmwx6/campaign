@@ -26,7 +26,7 @@ app.use((req, res, next) => {
 
 //mongo connection for heroku
 const dbconfig = {
-  url: 'mongodb://localhost:27017',
+  url: 'mongodb://test:test123@ds145573.mlab.com:45573',
   dbname: 'heroku_kbx0g42n'
 }
 const connOptions = {
