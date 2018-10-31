@@ -40,7 +40,6 @@ const connOptions = {
   useNewUrlParser: true,
   promiseLibrary: global.Promise
 };
-console.log(`${dbconfig.url}/${dbconfig.dbname}`);
 
 mongoose.connect(`${dbconfig.url}/${dbconfig.dbname}`,{useNewUrlParser:true});
 
