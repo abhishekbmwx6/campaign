@@ -8,7 +8,7 @@ router.get('/addpoints', (req, res) => {
   // validation schema
   const schema = Joi.object().keys({
     who: Joi.string().required(),
-    channalid: Joi.string().required(),
+    channelid: Joi.string().required(),
     circle: Joi.string().required(),
     operator: Joi.string().required(),
     datetime: Joi.string()

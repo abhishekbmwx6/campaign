@@ -75,7 +75,13 @@ class CampaignOperations {
 
     console.log(data)
 
-    const { who, channalid, circle, operator, datetime } = data
+    let { who, channalid, circle, operator, datetime } = data
+
+    let datetimeArray = datetime.split(" ")
+    let newDate = datetimeArray[0].split("-")
+
+    datetime = `${newDate[2]}-${newDate[1]}-${newDate[0]} ${datetimeArray[1]}`
+
     const date = new Date(datetime)
     try {
       await this.checkCampaignDateTime(datetime)
@@ -117,7 +123,7 @@ class CampaignOperations {
       let todaysPointIndex = __.findIndex(User.call_logs, { "call_date": moment(date).utcOffset('+5:30').format("YYYY-MM-DD") })
       if (todaysPointIndex >= 0) {
         points = 0
-        resposeMessage = `the points are already allocated for the number ${who}. you can come back next day to participate again`
+        resposeMessage = `the points are already allocated for the number ${who}.you can come back next day to participate again`
       }
 
       //update campaing database
