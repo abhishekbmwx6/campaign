@@ -58,7 +58,7 @@ class CampaignOperations {
   }
 
   sendMessage(who, message) {
-    let url = `http://sms.webozindia.in/api/v3/?method=sms&api_key=A77821e3a8091a31ab3110383cbc48666&to=91${who}&sender=WOISOL&message=${encodeURIComponent(message)}`
+    let url = `http://sms.webozindia.in/api/v3/?method=sms&api_key=Af5380d9781b89658221773264b47bf1e&to=91${who}&sender=ZANMOL&message=${encodeURIComponent(message)}`
     console.log(url)
     return fetch(url)
       .then(res => res.text())
@@ -102,6 +102,7 @@ class CampaignOperations {
           channel_id: channalid,
           circle,
           operator,
+          totalPoints: points,
           call_logs: [
             {
               points,
@@ -111,8 +112,8 @@ class CampaignOperations {
           ]
         }
 
-        await campaignModel.create(userData)
-        let resposeMessage = "you have given the right answer. your points are now " + points
+        let res = await campaignModel.create(userData)
+        let resposeMessage = `ज़ी अनमोल दिवाली इनामोंवाली प्रतियोगिता में आज आपने जीते हैं ${points} पॉइंट्स अब तक आपके कुल पॉइंट्स हैं ${points}`
         await this.sendMessage(who, resposeMessage)
         return resposeMessage
       }
@@ -120,12 +121,18 @@ class CampaignOperations {
       console.log("!!!!!Old User!!!!!!!")
       //presnt
       let resposeMessage = null
-      let todaysPointIndex = __.findIndex(User.call_logs, { "call_date": moment(date).utcOffset('+5:30').format("YYYY-MM-DD") })
-      if (todaysPointIndex >= 0) {
+      let sendSMS = true
+      let todaysPointArray = __.where(User.call_logs, { "call_date": moment(date).utcOffset('+5:30').format("YYYY-MM-DD") })
+      console.log(" total hits : ", todaysPointArray.length)
+      if (todaysPointArray.length == 1) {
         points = 0
-        resposeMessage = `the points are already allocated for the number ${who}.you can come back next day to participate again`
+        resposeMessage = `प्रतियोगिता के आज के पॉइंट्स आप प्राप्त कर चुके हैं कल फिर से प्रतियोगिता में भाग लीजिये और पॉइंट्स जीतिए`
+      } else if (todaysPointArray.length > 1) {
+        sendSMS = false
+        points = 0
+        resposeMessage = `प्रतियोगिता के आज के पॉइंट्स आप प्राप्त कर चुके हैं कल फिर से प्रतियोगिता में भाग लीजिये और पॉइंट्स जीतिए`
       }
-
+      console.log(" send SMS ", sendSMS)
       //update campaing database
       User.call_logs.push({
         points,
@@ -133,13 +140,17 @@ class CampaignOperations {
         call_time: moment(date).utcOffset('+5:30').format("YYYY-MM-DD HH:mm:ss")
       })
 
-      await campaignModel.updateOne({ _id: ObjectId(User._id) }, { $set: { call_logs: User.call_logs } })
       let finalPoints = __.pluck(User.call_logs, 'points')
       console.log(finalPoints)
       let totalPoints = finalPoints.reduce(this.getSum)
-      resposeMessage = resposeMessage === null ? "you have given the right answer. your points are now " + totalPoints : resposeMessage
 
-      await this.sendMessage(who, resposeMessage)
+      await campaignModel.updateOne({ _id: ObjectId(User._id) }, { $set: { totalPoints, call_logs: User.call_logs } })
+
+      resposeMessage = resposeMessage === null ? `ज़ी अनमोल दिवाली इनामोंवाली प्रतियोगिता में आज आपने जीते हैं ${points} पॉइंट्स अब तक आपके कुल पॉइंट्स हैं ${totalPoints}` : resposeMessage
+
+      if (sendSMS) {
+        await this.sendMessage(who, resposeMessage)
+      }
       return resposeMessage
     } catch (err) {
       console.log(err)

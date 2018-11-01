@@ -5,27 +5,27 @@ const config = {
   "campaign_end_time": "23:59:00",
   "campaign": {
     "week1": {
-      "sunday": 10,
-      "monday": 15,
-      "tuesday": 10,
-      "wednesday": 20,
-      "thursday": 15,
-      "friday": 10,
-      "saturday": 20
-    },
-    "week2": {
-      "sunday": 20,
-      "monday": 15,
-      "tuesday": 10,
-      "wednesday": 10,
-      "thursday": 15,
-      "friday": 10,
+      "sunday": 15,
+      "monday": 10,
+      "tuesday": 20,
+      "wednesday": 15,
+      "thursday": 0,
+      "friday": 0,
       "saturday": 10
     },
+    "week2": {
+      "sunday": 0,
+      "monday": 0,
+      "tuesday": 0,
+      "wednesday": 0,
+      "thursday": 10,
+      "friday": 20,
+      "saturday": 20
+    },
     "week3": {
-      "sunday": 10,
-      "monday": 15,
-      "tuesday": 20,
+      "sunday": 15,
+      "monday": 10,
+      "tuesday": 10,
       "wednesday": 15,
       "thursday": 20,
       "friday": 10,
@@ -34,19 +34,19 @@ const config = {
     "week4": {
       "sunday": 15,
       "monday": 20,
-      "tuesday": 10,
-      "wednesday": 10,
-      "thursday": 15,
+      "tuesday": 15,
+      "wednesday": 20,
+      "thursday": 10,
       "friday": 10,
-      "saturday": 20
+      "saturday": 15
     },
     "week5": {
-      "sunday": 0,
-      "monday": 0,
-      "tuesday": 0,
-      "wednesday": 0,
-      "thursday": 0,
-      "friday": 0,
+      "sunday": 20,
+      "monday": 10,
+      "tuesday": 10,
+      "wednesday": 15,
+      "thursday": 10,
+      "friday": 20,
       "saturday": 0
     }
   }

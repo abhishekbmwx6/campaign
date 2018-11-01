@@ -16,6 +16,7 @@ const campaignSchema = mongoose.Schema({
   channel_id: { type: String, require: true },
   circle: { type: String, require: true },
   operator: { type: String, require: true },
+  totalPoints: { type: Number, default: 0 },
   call_logs: [call_logsSchema]
 }, {
     timestamps: true
