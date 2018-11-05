@@ -158,6 +158,45 @@ class CampaignOperations {
     }
   }
 
+  getLatestPointsFromLogs(call_logs) {
+    let result = {}
+    for (let i = call_logs.length - 1; i >= 0; i--) {
+      if (call_logs[i].points > 0) {
+        result = { lastAnswerDate: call_logs[i].call_time, lastAnswerPoints: call_logs[i].points }
+        break;
+      }
+    }
+    return result
+  }
+
+  async report(data) {
+    try {
+
+      let query = { updatedAt: { $gte: new Date(data.fromdate).toISOString(), $lt: new Date(data.todate).toISOString() } }
+      let result = await campaignModel.find(query).lean()
+      if (!(result && result.length)) {
+        throw new Error("No data found!")
+      }
+
+      let finalJson = []
+      let count = 0
+      result.map(res => {
+        count++
+        let { call_logs } = res
+        let lastAnswerDate = call_logs[call_logs.length - 1].call_time;
+        let logresult = this.getLatestPointsFromLogs(call_logs)
+        let lastCorrectAnswerDate = logresult.lastAnswerDate;
+        let lastAnswerPoints = logresult.lastAnswerPoints
+        finalJson.push({ "sr_no": count, contact: res.who, circle: res.circle, operator: res.operator, lastCorrectAnswerDate, lastAnswerDate, lastAnswerPoints, totalPoints: res.totalPoints })
+      })
+
+      return finalJson
+    } catch (err) {
+      console.log("Final error in report model : ", err)
+      throw err
+    }
+  }
+
 }
 
 module.exports = CampaignOperations;

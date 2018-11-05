@@ -4,7 +4,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require("mongoose");
-
+const json2xls = require('json2xls');
 const indexRouter = require('./routes');
 
 const app = express();
@@ -42,6 +42,8 @@ const connOptions = {
 };
 
 mongoose.connect(`${dbconfig.url}/${dbconfig.dbname}`, { useNewUrlParser: true });
+
+app.use(json2xls.middleware);
 
 app.use('/', indexRouter);
 

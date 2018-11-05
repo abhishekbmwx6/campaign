@@ -3,6 +3,7 @@ const router = require('express').Router();
 const Joi = require('joi');
 const { validate } = require('../helper/helper')
 const CampaignOperations = require('../model/campaign');
+const json2xls = require('json2xls');
 
 router.get('/addpoints', (req, res) => {
   // validation schema
@@ -40,6 +41,24 @@ router.get('/addpoints', (req, res) => {
       res.json(response)
     });
 
+})
+
+router.get('/report', (req, res) => {
+  const campaignOperations = new CampaignOperations();
+
+  campaignOperations.report(req.query)
+    .then(result => {
+      res.xls(`campaign-report-${req.query.fromdate}.xlsx`, result);
+    })
+    .catch(err => {
+      console.log("controller error ", err)
+      let response = {
+        statusCode: 1,
+        message: err.message,
+        error: err
+      }
+      res.json(response)
+    })
 })
 
 
