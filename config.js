@@ -14,9 +14,9 @@ const config = {
       "saturday": 10
     },
     "week2": {
-      "sunday": 0,
-      "monday": 0,
-      "tuesday": 0,
+      "sunday": 15,
+      "monday": 10,
+      "tuesday": 10,
       "wednesday": 0,
       "thursday": 10,
       "friday": 20,
@@ -24,17 +24,17 @@ const config = {
     },
     "week3": {
       "sunday": 15,
-      "monday": 10,
-      "tuesday": 10,
+      "monday": 20,
+      "tuesday": 15,
       "wednesday": 15,
       "thursday": 20,
       "friday": 10,
       "saturday": 10
     },
     "week4": {
-      "sunday": 15,
-      "monday": 20,
-      "tuesday": 15,
+      "sunday": 20,
+      "monday": 10,
+      "tuesday": 10,
       "wednesday": 20,
       "thursday": 10,
       "friday": 10,
